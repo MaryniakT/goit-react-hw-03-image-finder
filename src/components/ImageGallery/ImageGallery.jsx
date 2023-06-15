@@ -1,4 +1,4 @@
-import { ImageErrorView } from 'components/ImageErrorViews/ImageErrorView';
+import { ImageErrorView } from 'components/ImageErrorView/ImageErrorView';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { Loader } from 'components/Loader/Loader';
 import { Component } from 'react';
