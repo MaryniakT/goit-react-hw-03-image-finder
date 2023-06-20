@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Gallery = styled.ul`
+export const List = styled.ul`
   display: grid;
   max-width: calc(100vw - 48px);
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -13,7 +13,3 @@ export const Gallery = styled.ul`
   margin-right: auto;
 `;
 
-export const Notif = styled.div`
-  margin: 0 auto;
-  font-size: 20px;
-`;
