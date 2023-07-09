@@ -1,68 +1,95 @@
 
-import { ToastContainer } from 'react-toastify';
-import React from 'react';
-import { fetchImages } from '../services/fetchImages';
-import {Searchbar, Layout, ImageGallery,Loader, ImageErrorView, Button } from 'components';
+import { Component } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Searchbar } from './Searchbar/Searchbar';
+import { ImageGallery } from './ImageGallery/ImageGallery';
+import { Loader } from './Loader/Loader';
+import { Button } from './Button/Button';
+import { getImages } from '../services/api';
 
+const STATUS = {
+  IDLE: 'idle',
+  PENDING: 'pending',
+  RESOLVED: 'resolved',
+  REJECTED: 'rejected',
+};
 
-export class App extends React.Component {
+export class App extends Component {
   state = {
-    searchText: '',
-    page: 1,
-    perPage: 12,
-    totalPages: 0,
-    
     images: [],
-    error: null,
-    isLoading: false,
+    query: '',
+    page: 1,
+    isLoading: STATUS.IDLE,
+    totalHits: null,
   };
 
   async componentDidUpdate(_, prevState) {
-    const { searchText, page, perPage } = this.state;
-    if (page !== prevState.page || searchText !== prevState.searchText) {
-      this.setState({ isLoading: true });
+    const { query, page } = this.state;
+
+    if (prevState.page !== page || prevState.query !== query) {
+      this.setState({ isLoading: STATUS.PENDING });
+
       try {
-        const response = await fetchImages({ searchText, page, perPage });
-        if (response.hits.length === 0) {
-          throw new Error(`Sorry, no photo from ${searchText}!`);
+        const { hits, totalHits } = await getImages(query, page);
+
+        if (totalHits === 0) {
+          toast.warn('Nothing was found for your request. Please try again.');
+          this.setState({ isLoading: STATUS.RESOLVED });
+          return;
         }
+
         this.setState(prevState => ({
-          images: [...prevState.images, ...response.hits],
-          totalPages: Math.ceil(response.totalHits / perPage),
-          error: null,
+          images: [...prevState.images, ...hits],
+          totalHits: Math.ceil(totalHits / 12),
         }));
+
+        this.setState({ isLoading: STATUS.RESOLVED });
       } catch (error) {
-        this.setState({ error: error.message, isLoading: false });
-      } finally {
-        this.setState({ isLoading: false });
+        this.errorMessage();
+
+        this.setState({ isLoading: STATUS.REJECTED });
       }
     }
   }
 
-  handleSearch = searchText => {
-    this.setState({ searchText, page: 1, images: [] });
+  errorMessage = () => {
+    toast.error(`Something went wrong!`);
+  };
+
+  handleSearch = ({ query }) => {
+    this.setState({ query, page: 1, images: [] });
   };
 
   handleLoadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
   };
 
   render() {
-    const { images, error, page, totalPages, isLoading } = this.state;
-    const showLoadMoreButton = images.length !== 0 && page < totalPages;
+    const { images, isLoading, totalHits, page } = this.state;
+    const showLoadMoreBtn = totalHits > page;
+
     return (
-      <Layout>
+      <div>
         <Searchbar onSubmit={this.handleSearch} />
-        {isLoading && <Loader />}
+
+        {isLoading === STATUS.PENDING && <Loader />}
+
         <ImageGallery images={images} />
-        {showLoadMoreButton && (
-          <Button onClick={this.handleLoadMore} disabled={isLoading}>
-            {isLoading ? 'Loading...' : 'Load More'}
+
+        {showLoadMoreBtn && (
+          <Button
+            loadMore={this.handleLoadMore}
+            disabled={isLoading === STATUS.PENDING ? true : false}
+          >
+            {isLoading === STATUS.PENDING ? 'Loading...' : 'Load more'}
           </Button>
         )}
-        {error && <ImageErrorView>{error}</ImageErrorView>}
-        <ToastContainer autoClose={3000} />
-      </Layout>
+
+        <ToastContainer autoClose={3000} theme="colored" />
+      </div>
     );
   }
 }

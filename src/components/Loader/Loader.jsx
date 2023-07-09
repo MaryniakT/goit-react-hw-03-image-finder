@@ -1,10 +1,11 @@
-import { ColorRing } from 'react-loader-spinner';
-import { Wrapper } from './Loader.styled';
+import { Spinner, InnerOne, InnerTwo, InnerThree } from './Loader.styled';
 
-export const Loader = () => {
+export function Loader() {
   return (
-    <Wrapper>
-      <ColorRing />
-    </Wrapper>
+    <Spinner>
+      <InnerOne></InnerOne>
+      <InnerTwo></InnerTwo>
+      <InnerThree></InnerThree>
+    </Spinner>
   );
-};
+}

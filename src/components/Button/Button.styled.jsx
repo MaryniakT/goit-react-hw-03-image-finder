@@ -1,27 +1,36 @@
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
-export const LoadMoreBtn = styled.button`
-  padding: 8px 16px;
-  margin: 0 auto;
-  border-radius: 2px;
-  background-color: #3f51b5;
-  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
-  text-align: center;
-  display: inline-block;
-  color: #fff;
-  border: 0;
-  text-decoration: none;
-  cursor: pointer;
+export const LoadMore = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 30px;
+  padding: 8px;
+
+  min-width: 100px;
+  height: 35px;
   font-family: inherit;
-  font-size: 18px;
-  line-height: 24px;
-  font-style: normal;
-  font-weight: 500;
-  width: 180px;
-  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
-    0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-  :hover,
-  :focus {
-    background-color: #303f9f;
+  font-weight: 600;
+  text-transform: capitalize;
+
+  background: linear-gradient(
+    -45deg,
+    rgba(0, 0, 0, 0.082),
+    rgba(255, 255, 255, 0.25)
+  );
+
+  background-color: ${p => p.theme.colors.lightBlue};
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+
+  box-shadow: -2px -2px 5px 0 #f1fafa, 3px 3px 7px 0 rgba(0, 0, 0, 0.25);
+  transition: background-color ${p => p.theme.cubic.cubicBezier},
+    box-shadow ${p => p.theme.cubic.cubicBezier};
+
+  &:hover {
+    box-shadow: ${p => p.theme.shadow.btnHover};
   }
 `;

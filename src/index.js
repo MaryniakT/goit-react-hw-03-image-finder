@@ -1,16 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import 'react-toastify/dist/ReactToastify.css';
 import { App } from 'components/App';
-import { ThemeProvider } from 'styled-components';
-
-const theme = {
-  colors: {
-    black: '#212121',
-    white: '#fff',
-    accent: 'orangered',
-  },
-};
+import { ThemeProvider } from '@emotion/react';
+import './index.css';
+import { theme } from './theme';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
